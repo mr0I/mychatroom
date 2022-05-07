@@ -1,0 +1,18 @@
+{
+  "name": "mysocket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zeroone",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.18.1",
+    "express-rate-limit": "^6.4.0",
+    "googlebot-verify": "^0.1.2",
+    "redis": "^4.1.0"
+  }
+}
