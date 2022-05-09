@@ -2,7 +2,13 @@ const express = require('express'),
     app = express(),
     config = require('./config'),
     process = require('process'),
-    { createClient }  = require('redis');
+    { createClient }  = require('redis'),
+    http = require('http'),
+    server = http.createServer(app),
+    { Server } = require("socket.io"),
+    io = new Server(server);
+
+
 
 
 // globals
@@ -35,20 +41,25 @@ global.parseOffsetLimit = function (req) {
     const limit = Number.parseInt(req.query.limit || '20');
     return { offset, limit };
 };
-(async () =>{
-    global.client = createClient(config.redis_port,config.redis_host);
-    global.client.on('error', (err) => console.log('Redis Client Error', err));
-    await global.client.connect();
-}) ();
 
 
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
 
 
-const port = 8080;
-const hostname = '127.0.0.1';
-app.listen(port, hostname, () => {
-    console.log(`server started: http://${hostname}:${port}`);
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 });
-//app.listen(process.argv[2]);
+
+
+const hostname = '127.0.0.1';
+server.listen(8080, hostname, () => {
+    console.log(`server started: http://${hostname}:${8080}`);
+});
+// app.listen(process.argv[2] , () => {
+//     console.log(`server started: http://${hostname}:${process.argv[2]}`);
+// });

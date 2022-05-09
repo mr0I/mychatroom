@@ -13,6 +13,7 @@
     "express": "^4.18.1",
     "express-rate-limit": "^6.4.0",
     "googlebot-verify": "^0.1.2",
-    "redis": "^4.1.0"
+    "redis": "^4.1.0",
+    "socket.io": "^4.5.0"
   }
 }
