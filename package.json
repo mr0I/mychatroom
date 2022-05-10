@@ -9,11 +9,14 @@
   "author": "zeroone",
   "license": "ISC",
   "dependencies": {
+    "compression": "^1.7.4",
     "ejs": "^3.1.6",
     "express": "^4.18.1",
     "express-rate-limit": "^6.4.0",
     "googlebot-verify": "^0.1.2",
+    "path": "^0.12.7",
     "redis": "^4.1.0",
+    "serve-favicon": "^2.5.0",
     "socket.io": "^4.5.0"
   }
 }

@@ -6,7 +6,10 @@ const express = require('express'),
     http = require('http'),
     server = http.createServer(app),
     { Server } = require("socket.io"),
-    io = new Server(server);
+    io = new Server(server),
+    path = require('path'),
+    favicon = require('serve-favicon');
+
 
 
 
@@ -43,6 +46,11 @@ global.parseOffsetLimit = function (req) {
 };
 
 
+// serving static files
+app.use(express.static(path.join(__dirname,'static')));
+app.use(favicon(path.join(__dirname, '/static', 'favicon.ico')));
+
+require('./rpc/middleware')(app); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
 
@@ -50,6 +58,9 @@ require('./rpc/settings')(app); // setup the settings
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+    });
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
