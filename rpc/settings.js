@@ -5,7 +5,7 @@ module.exports = (app) => {
     app.set('view engine', 'ejs');
     app.set('views', [path.join(__dirname, '../views')]);
     app.get('*', (req, res) => {
-        res.status(404).render('pages/404', {
+        res.status(404).render('error_pages/404', {
             error: {
                 message: 'صفحه یافت نشد',
                 stack: '',

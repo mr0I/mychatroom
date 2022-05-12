@@ -8,7 +8,8 @@ const express = require('express'),
     { Server } = require("socket.io"),
     io = new Server(server),
     path = require('path'),
-    favicon = require('serve-favicon');
+    favicon = require('serve-favicon'),
+    redis = require('./helpers/redis');
 
 
 
@@ -33,7 +34,7 @@ global.asyncErrorRenderer = function (f) {
         try {
             await f(req, res, next);
         } catch (e) {
-            res.status(500).render('pages/error', {
+            res.status(500).render('error_pages/error', {
                 error: e
             });
         }
@@ -56,14 +57,44 @@ require('./rpc/settings')(app); // setup the settings
 
 
 
+
+const errorEmit = (socket) => {
+    return (err) => {
+        console.log(err);
+        socket.broadcast.emit('user.events', 'Something went wrong!');
+    };
+};
+
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.on('chat message', (msg) => {
+    socket.broadcast.emit('user.events','Someone has joined!');
+
+    socket.on('chat_msg', (msg) => {
         console.log('message: ' + msg);
+        io.emit('chat_msg', msg);
     });
+    socket.on('name', (name) => {
+        redis.client.set(socket.id,name,{
+            EX:Number(config.redis_expire),
+            NX: true // Only set the key if it does not already exist
+        }).then(() => {
+            console.log(name + ' says hello!');
+            socket.broadcast.emit('name', name);
+        },errorEmit(socket));
+    });
+
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        redis.client.get(socket.id)
+            .then((user) => {
+                if (user === null) return 'Someone';
+                else return user;
+            })
+            .then((user) => {
+                console.log(user + ' left');
+                socket.broadcast.emit('user.events', user + ' left');
+            }, errorEmit(socket));
     });
+
 });
 
 
