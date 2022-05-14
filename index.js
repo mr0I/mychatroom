@@ -1,10 +1,10 @@
 const express = require('express'),
     app = express(),
-    config = require('./config'),
     http = require('http'),
     server = http.createServer(app),
     { Server } = require("socket.io"),
     io = new Server(server),
+    config = require('./config'),
     redis = require('./helpers/redis');
 
 
@@ -43,13 +43,13 @@ require('./rpc/middleware')(app); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
 
+// socket
 const errorEmit = (socket) => {
     return (err) => {
         console.log(err);
         socket.broadcast.emit('user.events', 'Something went wrong!');
     };
 };
-
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.broadcast.emit('user.events','Someone has joined!');
@@ -58,13 +58,14 @@ io.on('connection', (socket) => {
         console.log('message: ' + msg);
         io.emit('chat_msg', msg);
     });
-    socket.on('name', (name) => {
-        redis.client.set(socket.id,name,{
+
+    socket.on('auth', (email) => {
+        redis.client.set(socket.id,email,{
             EX:Number(config.redis_expire),
             NX: true // Only set the key if it does not already exist
         }).then(() => {
-            console.log(name + ' says hello!');
-            socket.broadcast.emit('name', name);
+            console.log(email + ' logged in.');
+            socket.broadcast.emit('auth', email);
         },errorEmit(socket));
     });
 
@@ -79,7 +80,6 @@ io.on('connection', (socket) => {
                 socket.broadcast.emit('user.events', user + ' left');
             }, errorEmit(socket));
     });
-
 });
 
 
