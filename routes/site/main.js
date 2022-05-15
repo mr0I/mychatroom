@@ -4,10 +4,10 @@ const Router = require('express').Router,
 
 
 router.get('/', pageLimiter, asyncErrorRenderer(async (req, res) => {
-    res.render('site/auth');
-}));
-router.get('/chat', pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/chat');
+}));
+router.get('/login', pageLimiter, asyncErrorRenderer(async (req, res) => {
+    res.render('site/auth');
 }));
 
 

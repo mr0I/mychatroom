@@ -12,13 +12,19 @@ jQuery(document).ready(function ($) {
     // login
     $(loginBtn).on('click',function () {
         socket.emit('auth', document.getElementById('email').value);
-        window.location.href = 'http://127.0.0.1:8080/chat';
+        window.location.href = 'http://127.0.0.1:8080';
     });
 
     // emit events
     socket.on('chat_msg', function(msg) {addMessage(msg)});
     socket.on('user.events', function(msg) {addMessage(msg)});
-    socket.on('auth', (email) => addMessage(email + ' logged in!'));
+    //socket.on('event', function(msg) {addMessage(msg)});
+    socket.on('auth', (email) => {
+        addMessage(email);
+        if (document.getElementById('email')){
+        document.getElementById('email').value = email;
+        }
+    });
 
     // show messages
     $(form).on('submit',function (e) {

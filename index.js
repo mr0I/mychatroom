@@ -5,6 +5,7 @@ const express = require('express'),
     { Server } = require("socket.io"),
     io = new Server(server),
     config = require('./config'),
+    session = require('express-session'),
     redis = require('./helpers/redis');
 
 
@@ -39,9 +40,11 @@ global.parseOffsetLimit = function (req) {
     return { offset, limit };
 };
 
-require('./rpc/middleware')(app); // setup the settings
+require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
+
+
 
 // socket
 const errorEmit = (socket) => {
@@ -51,6 +54,13 @@ const errorEmit = (socket) => {
     };
 };
 io.on('connection', (socket) => {
+    console.log(socket.request.session);
+    if(socket.request.session.email !== undefined){
+        socket.emit('auth', socket.request.session.email);
+        io.emit('event', socket.request.session.email + ' has joined!');
+    }
+
+
     console.log('a user connected');
     socket.broadcast.emit('user.events','Someone has joined!');
 
@@ -60,25 +70,31 @@ io.on('connection', (socket) => {
     });
 
     socket.on('auth', (email) => {
-        redis.client.set(socket.id,email,{
-            EX:Number(config.redis_expire),
-            NX: true // Only set the key if it does not already exist
-        }).then(() => {
-            console.log(email + ' logged in.');
-            socket.broadcast.emit('auth', email);
-        },errorEmit(socket));
+        socket.request.session.email = email;
+        socket.request.session.save();
+       //socket.broadcast.emit('event', email + ' says hello!');
+        socket.broadcast.emit('auth', email + ' has joined');
+
+        // redis.client.set(socket.id,email,{
+        //     EX:Number(config.redis_expire),
+        //     NX: true // Only set the key if it does not already exist
+        // }).then(() => {
+        //     console.log(email + ' logged in.');
+        //     socket.broadcast.emit('auth', email);
+        // },errorEmit(socket));
     });
 
     socket.on('disconnect', () => {
-        redis.client.get(socket.id)
-            .then((user) => {
-                if (user === null) return 'Someone';
-                else return user;
-            })
-            .then((user) => {
-                console.log(user + ' left');
-                socket.broadcast.emit('user.events', user + ' left');
-            }, errorEmit(socket));
+
+        // redis.client.get(socket.id)
+        //     .then((user) => {
+        //         if (user === null) return 'Someone';
+        //         else return user;
+        //     })
+        //     .then((user) => {
+        //         console.log(user + ' left');
+        //         socket.broadcast.emit('user.events', user + ' left');
+        //     }, errorEmit(socket));
     });
 });
 
