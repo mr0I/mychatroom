@@ -57,13 +57,9 @@ io.on('connection', (socket) => {
     console.log(socket.request.session);
     if(socket.request.session.email !== undefined){
         socket.emit('auth', socket.request.session.email);
-        io.emit('event', socket.request.session.email + ' has joined!');
     }
 
-
-    console.log('a user connected');
-    socket.broadcast.emit('user.events','Someone has joined!');
-
+    //console.log('a user connected');
     socket.on('chat_msg', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat_msg', msg);
@@ -72,7 +68,6 @@ io.on('connection', (socket) => {
     socket.on('auth', (email) => {
         socket.request.session.email = email;
         socket.request.session.save();
-       //socket.broadcast.emit('event', email + ' says hello!');
         socket.broadcast.emit('auth', email + ' has joined');
 
         // redis.client.set(socket.id,email,{
@@ -85,7 +80,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-
         // redis.client.get(socket.id)
         //     .then((user) => {
         //         if (user === null) return 'Someone';

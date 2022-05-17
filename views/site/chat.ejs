@@ -18,12 +18,16 @@
 <body>
 <ul id="messages"></ul>
 <form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
+    <input id="input" autocomplete="off" />
+    <input type="hidden" id="user_mail">
+    <button>Send</button>
 </form>
 
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/libs/jquery-3.3.1.min.js"></script>
+<script src="/libs/cryptojs.js"></script>
+<script src="/libs/md5.js"></script>
 <script type="text/javascript" src="/scripts.js"></script>
 </body>
 </html>

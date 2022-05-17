@@ -6,7 +6,7 @@ jQuery(document).ready(function ($) {
     const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');
-    const messages = document.getElementById('messages');
+    const userMail = document.getElementById('user_mail');
     const loginBtn = document.getElementById('login_btn');
 
     // login
@@ -16,13 +16,17 @@ jQuery(document).ready(function ($) {
     });
 
     // emit events
-    socket.on('chat_msg', function(msg) {addMessage(msg)});
-    socket.on('user.events', function(msg) {addMessage(msg)});
-    //socket.on('event', function(msg) {addMessage(msg)});
+    socket.on('chat_msg', function(data) {
+        const {message,email} = data;
+        addMessage(message,email);
+    });
     socket.on('auth', (email) => {
-        addMessage(email);
+        addNotif(email);
         if (document.getElementById('email')){
-        document.getElementById('email').value = email;
+            document.getElementById('email').value = email;
+        }
+        if (document.getElementById('user_mail')){
+            document.getElementById('user_mail').value = email;
         }
     });
 
@@ -30,19 +34,33 @@ jQuery(document).ready(function ($) {
     $(form).on('submit',function (e) {
         e.preventDefault();
         if (input.value) {
-            socket.emit('chat_msg', input.value);
+            const msgData = {
+              message: input.value,
+              email: userMail.value
+            };
+            socket.emit('chat_msg', msgData);
             input.value = '';
         }
     });
 
 
     // functions
-    const addMessage = (msg) => {
+    const addMessage = (msg,email='email@email.com') => {
        let messagesContainer = $('#messages');
+       const emailMd5 = CryptoJS.MD5(email).toString();
+       const imageSrc = `http://www.gravatar.com/avatar/${emailMd5}?rating=PG&size=24&size=50&d=identicon`;
         $(messagesContainer).append(`  
             <li>
-                <img src="http://www.gravatar.com/avatar/d08d546f442dff7694dcdfa967cfcd6e?rating=PG&size=24&size=50&d=identicon" 
-                alt="avatar" style=" border-radius: 50%; width: 24px;"> 
+                <img src=${imageSrc} alt="avatar" style=" border-radius: 50%; width: 24px;"> 
+                <span style="vertical-align: super">${msg}</span>
+            </li>
+        `);
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+    const addNotif = (msg) => {
+        let messagesContainer = $('#messages');
+        $(messagesContainer).append(`  
+            <li style="text-align: center;font-size: 85%;color: #555;">
                 <span style="vertical-align: super">${msg}</span>
             </li>
         `);
