@@ -54,7 +54,6 @@ const errorEmit = (socket) => {
     };
 };
 io.on('connection', (socket) => {
-    console.log(socket.request.session);
     if(socket.request.session.email !== undefined){
         socket.emit('auth', socket.request.session.email);
     }

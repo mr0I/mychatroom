@@ -21,7 +21,7 @@ module.exports = (app,io) => {
     });
     app.use(sessionMiddleware);
     app.use((req, res, next) => {
-        console.log(`From Express: ${req.session.email}`);
+        // console.log(`From Express: ${req.session.email}`);
         next();
     });
     io.use((socket, next) => {sessionMiddleware(socket.request, {}, next);});

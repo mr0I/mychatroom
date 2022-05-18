@@ -3,6 +3,14 @@
 })(jQuery);
 
 jQuery(document).ready(function ($) {
+    let localVars = {};
+    if (document.getElementById('jsonData')) {
+        console.log(document.getElementById('jsonData').innerHTML);
+        localVars = JSON.parse(document.getElementById('jsonData').innerHTML , false);
+    }
+    var crypt = new JSEncrypt();
+    crypt.setKey(localVars.pk); //You can use also setPrivateKey and setPublicKey, they are both alias to setKey
+
     const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');
@@ -17,7 +25,8 @@ jQuery(document).ready(function ($) {
 
     // emit events
     socket.on('chat_msg', function(data) {
-        const {message,email} = data;
+        let {message,email} = data;
+        message = crypt.decrypt(message);
         addMessage(message,email);
     });
     socket.on('auth', (email) => {
@@ -35,9 +44,10 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         if (input.value) {
             const msgData = {
-              message: input.value,
-              email: userMail.value
+                message: crypt.encrypt(input.value),
+                email: userMail.value
             };
+
             socket.emit('chat_msg', msgData);
             input.value = '';
         }
@@ -46,13 +56,13 @@ jQuery(document).ready(function ($) {
 
     // functions
     const addMessage = (msg,email='email@email.com') => {
-       let messagesContainer = $('#messages');
-       const emailMd5 = CryptoJS.MD5(email).toString();
-       const imageSrc = `http://www.gravatar.com/avatar/${emailMd5}?rating=PG&size=24&size=50&d=identicon`;
+        let messagesContainer = $('#messages');
+        const emailMd5 = CryptoJS.MD5(email).toString();
+        const imageSrc = `http://www.gravatar.com/avatar/${emailMd5}?rating=PG&size=24&size=50&d=identicon`;
         $(messagesContainer).append(`  
             <li>
                 <img src=${imageSrc} alt="avatar" style=" border-radius: 50%; width: 24px;"> 
-                <span style="vertical-align: super">${msg}</span>
+                <span style="vertical-align: super">${msg} <small style="font-size: 65%;color: #555;margin: 0 5px;">${email}</small> </span>
             </li>
         `);
         window.scrollTo(0, document.body.scrollHeight);
