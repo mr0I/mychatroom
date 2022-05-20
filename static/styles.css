@@ -1,0 +1,50 @@
+/*
+color pallet:
+#191919
+#2D4263
+#C84B31
+#ECDBBA
+*/
+body {
+    margin: 0;
+    padding-bottom: 3rem;
+    background-image: url(./images/wall3.png);
+    /*background-image: linear-gradient(rgba(25, 25, 25, 0.5),*/
+    /*rgba(236, 219, 186, 0.2)),*/
+    /*url(./images/wall3.png);*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#form { background: rgba(0, 0, 0, 0.15); padding: 0; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+#input { border: none; padding: 0 1rem; flex-grow: 1; margin: 0; }
+#input:focus { outline: none; }
+#form > button {
+    background: #2D4263;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    outline: none;
+    color: #ECDBBA;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    font-weight: bold;
+    width: 10%;
+}
+
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages > li {
+    padding: 0.5rem;
+    color: #ECDBBA;
+    width: 96%;
+    background-color: #191919;
+    margin: 8px auto;
+}
+
+#messages > li:nth-child(odd){border-radius: 0 20px 0 0;}
+#messages > li:nth-child(even){border-radius: 0 0 20px 0;}

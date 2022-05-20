@@ -16,6 +16,7 @@
     "express-rate-limit": "^6.4.0",
     "express-session": "^1.17.3",
     "googlebot-verify": "^0.1.2",
+    "node-jsencrypt": "^1.0.0",
     "path": "^0.12.7",
     "redis": "^4.1.0",
     "serve-favicon": "^2.5.0",

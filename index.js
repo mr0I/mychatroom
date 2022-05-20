@@ -6,6 +6,7 @@ const express = require('express'),
     io = new Server(server),
     config = require('./config'),
     session = require('express-session'),
+    JSEncrypt = require('node-jsencrypt'),
     redis = require('./helpers/redis');
 
 
@@ -45,7 +46,6 @@ require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
 
 
-
 // socket
 const errorEmit = (socket) => {
     return (err) => {
@@ -55,19 +55,27 @@ const errorEmit = (socket) => {
 };
 io.on('connection', (socket) => {
     if(socket.request.session.email !== undefined){
-        socket.emit('auth', socket.request.session.email);
+        const data = {
+            name : socket.request.session.name,
+            email: socket.request.session.email
+        };
+
+         socket.emit('auth', data);
     }
 
     //console.log('a user connected');
-    socket.on('chat_msg', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('chat_msg', msg);
+    socket.on('chat_msg', (data) => {
+        io.emit('chat_msg', data);
     });
 
-    socket.on('auth', (email) => {
+    socket.on('auth', (data) => {
+        let {name,email} = data;
+
         socket.request.session.email = email;
+        socket.request.session.name = name;
         socket.request.session.save();
-        socket.broadcast.emit('auth', email + ' has joined');
+        socket.broadcast.emit('join_message', name + ' has joined');
+
 
         // redis.client.set(socket.id,email,{
         //     EX:Number(config.redis_expire),
