@@ -1,11 +1,11 @@
 (function($) {
+    "use strict";
     $(window).on("load", function() { /*...*/ });
 })(jQuery);
 
 jQuery(document).ready(function ($) {
     let localVars = {};
     if (document.getElementById('jsonData')) {
-        console.log(document.getElementById('jsonData').innerHTML);
         localVars = JSON.parse(document.getElementById('jsonData').innerHTML , false);
     }
     var crypt = new JSEncrypt();
@@ -14,12 +14,16 @@ jQuery(document).ready(function ($) {
     const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');
-    const userMail = document.getElementById('user_mail');
+    const userMailInput = document.getElementById('user_mail');
     const loginBtn = document.getElementById('login_btn');
 
     // login
-    $(loginBtn).on('click',function () {
-        socket.emit('auth', document.getElementById('email').value);
+    $(loginBtn).on('click',function (e) {
+        e.preventDefault();
+        socket.emit('auth', {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+        });
         window.location.href = 'http://127.0.0.1:8080';
     });
 
@@ -29,8 +33,10 @@ jQuery(document).ready(function ($) {
         message = crypt.decrypt(message);
         addMessage(message,email);
     });
-    socket.on('auth', (email) => {
-        addNotif(email);
+    socket.on('auth', (data) => {
+        const {name,email} = data;
+
+        addNotif(name);
         if (document.getElementById('email')){
             document.getElementById('email').value = email;
         }
@@ -39,20 +45,20 @@ jQuery(document).ready(function ($) {
         }
     });
 
+
     // show messages
     $(form).on('submit',function (e) {
         e.preventDefault();
         if (input.value) {
             const msgData = {
                 message: crypt.encrypt(input.value),
-                email: userMail.value
+                email: userMailInput.value,
             };
 
             socket.emit('chat_msg', msgData);
             input.value = '';
         }
     });
-
 
     // functions
     const addMessage = (msg,email='email@email.com') => {
@@ -62,7 +68,7 @@ jQuery(document).ready(function ($) {
         $(messagesContainer).append(`  
             <li>
                 <img src=${imageSrc} alt="avatar" style=" border-radius: 50%; width: 24px;"> 
-                <span style="vertical-align: super">${msg} <small style="font-size: 65%;color: #555;margin: 0 5px;">${email}</small> </span>
+                <span style="vertical-align: super">${msg}</span>
             </li>
         `);
         window.scrollTo(0, document.body.scrollHeight);
@@ -71,11 +77,12 @@ jQuery(document).ready(function ($) {
         let messagesContainer = $('#messages');
         $(messagesContainer).append(`  
             <li style="text-align: center;font-size: 85%;color: #555;">
-                <span style="vertical-align: super">${msg}</span>
+                <span style="vertical-align: super">${msg} Logged in.</span>
             </li>
         `);
         window.scrollTo(0, document.body.scrollHeight);
     }
+
 });
 
 
