@@ -59,11 +59,10 @@ io.on('connection', (socket) => {
             name : socket.request.session.name,
             email: socket.request.session.email
         };
-
-         socket.emit('auth', data);
+        socket.emit('auth', data);
     }
 
-    //console.log('a user connected');
+    //console.log('a user connected',socket.id);
     socket.on('chat_msg', (data) => {
         io.emit('chat_msg', data);
     });
@@ -75,7 +74,6 @@ io.on('connection', (socket) => {
         socket.request.session.name = name;
         socket.request.session.save();
         socket.broadcast.emit('join_message', name + ' has joined');
-
 
         // redis.client.set(socket.id,email,{
         //     EX:Number(config.redis_expire),

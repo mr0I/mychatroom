@@ -4,6 +4,17 @@
 })(jQuery);
 
 jQuery(document).ready(function ($) {
+
+    $('.switch-to-login').on('click',function () {
+       $('.login-wrap').addClass('d-none');
+       $('.register-wrap').removeClass('d-none');
+    });
+    $('.switch-to-register').on('click',function () {
+       $('.login-wrap').removeClass('d-none');
+       $('.register-wrap').addClass('d-none');
+    });
+
+
     const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');

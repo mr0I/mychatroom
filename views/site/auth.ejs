@@ -14,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4">
                 <div class="login-wrap p-0">
-                    <!--<h3 class="mb-4 text-center">Sign In</h3>-->
+                    <h3 class="mb-4 text-center">Sign In</h3>
                     <form class="signin-form">
                         <div class="form-group">
                             <input type="text" class="form-control" id="name" placeholder="Enter Name..." required>
@@ -27,22 +27,52 @@
                                 Login
                             </button>
                         </div>
+                        <!--<div class="form-group d-md-flex">-->
+                            <!--<div class="w-50">-->
+                                <!--<label class="checkbox-wrap checkbox-primary">Remember Me-->
+                                    <!--<input type="checkbox" checked>-->
+                                    <!--<span class="checkmark"></span>-->
+                                <!--</label>-->
+                            <!--</div>-->
+                            <!--<div class="w-50 text-md-right">-->
+                                <!--<a href="#" style="color: #fff">Forgot Password</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="form-group d-md-flex">
-                            <div class="w-50">
-                                <label class="checkbox-wrap checkbox-primary">Remember Me
-                                    <input type="checkbox" checked>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="w-50 text-md-right">
-                                <a href="#" style="color: #fff">Forgot Password</a>
+                            <div class="text-md-right">
+                                <a href="#" class="switch-to-login" style="color: #fff">Not Registered Yet?</a>
                             </div>
                         </div>
                     </form>
-                    <p class="w-100 text-center">&mdash; Or Login With &mdash;</p>
-                    <div class="social d-flex text-center">
-                        <a href="#" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span>Google</a>
-                    </div>
+                </div>
+                <div class="register-wrap p-0 d-none">
+                    <h3 class="mb-4 text-center">Sign Up</h3>
+                    <form class="signup-form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="name" placeholder="Enter Name..." required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" placeholder="Enter Email..." required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" placeholder="Enter Pass..." required>
+                        </div>
+                        <div class="form-group">
+                            <button class="form-control btn btn-primary rounded submit px-3" id="signin_btn">
+                                Sign Up
+                            </button>
+                        </div>
+                        <div class="form-group d-md-flex">
+                            <div class="text-md-right">
+                                <a href="#" class="switch-to-register" style="color: #fff">Already Have An Account?</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <p class="w-100 text-center">&mdash; Or Login With &mdash;</p>
+                <div class="social d-flex text-center">
+                    <a href="#" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span>Google</a>
                 </div>
             </div>
         </div>
