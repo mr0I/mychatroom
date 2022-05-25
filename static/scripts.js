@@ -4,7 +4,7 @@
 })(jQuery);
 
 jQuery(document).ready(function ($) {
-
+    // Auth Form
     $('.switch-to-login').on('click',function () {
        $('.login-wrap').addClass('d-none');
        $('.register-wrap').removeClass('d-none');
