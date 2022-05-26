@@ -21,9 +21,9 @@
                         <% })  %>
                     </div>
                 <% }  %>
-                <% if (typeof success_msg !== "undefined") { %>
+                <% if (success_message !== "") { %>
                     <div class="alert alert-success">
-                            <p><span class="text-success"><%= success_msg %></span></p>
+                            <p><span class="text-success"><%= success_message %></span></p>
                         </div>
                 <% }  %>
 

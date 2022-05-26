@@ -16,9 +16,15 @@ const registerValidation = [
 ];
 
 
-router.get('/', pageLimiter, asyncErrorRenderer(async (req, res) => {
+router.get('/',AuthCheck ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/chat');
 }));
+
+function AuthCheck(req, res, next){
+    if (req.isAuthenticated()) return next();
+    else res.redirect('/auth');
+}
+
 router.get('/auth', pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/auth');
 }));
@@ -40,18 +46,58 @@ router.post('/auth' , registerValidation,asyncErrorHandler(async (req, res) => {
             console.log(user);
         });
 
-        req.flash('success_msg' , 'You register successfully.');
+        req.flash('success_message' , 'You register successfully.');
         res.redirect('/auth');
     }
 }));
 
+
 router.post('/login', passport.authenticate(
     'local',{failureRedirect:'/auth', failureFlash: 'invalid username or pass', session: true}) ,
     asyncErrorHandler(async (req, res) => {
-        req.flash('success_msg', 'you logged in');
         res.redirect('/');
     }));
 
+router.get('/logout', function (req, res) {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/auth');
+    });
+});
+
+
+/* Debug Passport Authenticate */
+// router.post('/login', (req, res,next) => {
+//     passport.authenticate('local', function (err, user, info) {
+//         if (err) {
+//             return res.status(401).json(err);
+//         }
+//         if (user) {
+//             return res.status(200).json({
+//                 "user": user
+//             });
+//         } else {
+//             res.status(401).json(info);
+//         }
+//     })(req, res, next)
+// })
+
+
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+},function (username, password, done) {
+    User.getUserByEmail(username, function (err, user) {
+        if (err) throw err;
+        if (!user) return done(null, false, {messages: 'unknown user'});
+
+        User.comparePassword(password, user.password, function (err, isMatch) {
+            if (err) return done(err);
+            if (isMatch) return done(null, user);
+            else return done(null, false, {messages: 'invalid Password'});
+        });
+    });
+}));
 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
@@ -61,21 +107,6 @@ passport.deserializeUser(function(id, done) {
         done(err, user);
     });
 });
-passport.use(new LocalStrategy(function (email, password, done) {
-    User.getUserByEmail(email, function (err, user) {
-        if (err) throw err;
-        if (!user){
-            return done(null, false, {messages: 'unknown user'});
-        }
-
-        User.comparePassword(password, user.password, function (err, isMatch) {
-            if (err) return done(err);
-            if (isMatch) return done(null, user);
-            else return done(null, false, {messages: 'invalid Password'});
-        });
-    });
-
-}));
 
 
 module.exports = router;

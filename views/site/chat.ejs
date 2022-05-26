@@ -5,6 +5,10 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+<% if (success_message !== "") { %>
+    <script type="text/javascript">alert('you logged in')</script>
+<% }  %>
+
 <ul id="messages"></ul>
 <form id="form" action="">
     <input id="input" autocomplete="off" />
