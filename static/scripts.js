@@ -29,14 +29,14 @@ jQuery(document).ready(function ($) {
 
     // login
     $(loginBtn).on('click',function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         const data = {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
         };
         socket.emit('auth', data);
 
-        window.location.href = 'http://127.0.0.1:8080';
+        //window.location.href = 'http://127.0.0.1:8080';
     });
 
     // show messages

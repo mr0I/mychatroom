@@ -7,10 +7,13 @@ const express = require('express'),
     config = require('./config'),
     session = require('express-session'),
     JSEncrypt = require('node-jsencrypt'),
+    cmdArgs = require('yargs').argv,
     redis = require('./helpers/redis');
 
 
-// globals
+// Globals
+global.isDev = cmdArgs['dev'];
+
 global.asyncErrorHandler = function (f) {
     return async (req, res, next) => {
         try {

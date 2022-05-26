@@ -3,6 +3,7 @@ const compression = require('compression');
 const path = require('path');
 const favicon = require('serve-favicon');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 
 // setup global middleware here
@@ -25,5 +26,10 @@ module.exports = (app,io) => {
         next();
     });
     io.use((socket, next) => {sessionMiddleware(socket.request, {}, next);});
+    app.use(require('connect-flash')());
+    app.use(function (req, res, next) {
+        res.locals.messages = require('express-messages')(req, res);
+        next();
+    });
     app.use(compression()); // Compress all routes
 };
