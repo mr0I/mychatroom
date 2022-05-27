@@ -13,7 +13,6 @@ const express = require('express'),
 
 // Globals
 global.isDev = cmdArgs['dev'];
-
 global.asyncErrorHandler = function (f) {
     return async (req, res, next) => {
         try {
@@ -44,6 +43,11 @@ global.parseOffsetLimit = function (req) {
     return { offset, limit };
 };
 
+app.get('*', function (req, res, next) {
+    res.locals.currentUser  = req.user || null;
+    next();
+});
+
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
@@ -58,11 +62,7 @@ const errorEmit = (socket) => {
 };
 io.on('connection', (socket) => {
     if(socket.request.session.email !== undefined){
-        const data = {
-            name : socket.request.session.name,
-            email: socket.request.session.email
-        };
-        socket.emit('auth', data);
+        socket.emit('auth', socket.request.session.email);
     }
 
     //console.log('a user connected',socket.id);
@@ -70,21 +70,12 @@ io.on('connection', (socket) => {
         io.emit('chat_msg', data);
     });
 
-    socket.on('auth', (data) => {
-        let {name,email} = data;
-
+    socket.on('auth', (email) => {
+        console.log(email);
         socket.request.session.email = email;
-        socket.request.session.name = name;
+        //socket.request.session.name = name;
         socket.request.session.save();
-        socket.broadcast.emit('join_message', name + ' has joined');
-
-        // redis.client.set(socket.id,email,{
-        //     EX:Number(config.redis_expire),
-        //     NX: true // Only set the key if it does not already exist
-        // }).then(() => {
-        //     console.log(email + ' logged in.');
-        //     socket.broadcast.emit('auth', email);
-        // },errorEmit(socket));
+        socket.broadcast.emit('join_message', socket.request.session.name + ' has joined');
     });
 
     socket.on('disconnect', () => {

@@ -5,7 +5,13 @@ const { check, validationResult } = require('express-validator');
 const User = require('../../rpc/models/User');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
+const { checkAuth , isGuest } = require('../../helpers/middlewares');
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 
 const registerValidation = [
@@ -15,18 +21,12 @@ const registerValidation = [
     check('password').notEmpty().withMessage('پسورد را پر کنید!'),
 ];
 
-
-router.get('/',AuthCheck ,pageLimiter, asyncErrorRenderer(async (req, res) => {
-    res.render('site/chat');
+router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
+    const user = req.user;
+    res.render('site/chat',{name:user.name});
 }));
-
-function AuthCheck(req, res, next){
-    if (req.isAuthenticated()) return next();
-    else res.redirect('/auth');
-}
-
-router.get('/auth', pageLimiter, asyncErrorRenderer(async (req, res) => {
-    res.render('site/auth');
+router.get('/auth' ,pageLimiter, asyncErrorRenderer(async (req, res) => {
+    res.render('site/auth',{flash_msg: req.flash('success')});
 }));
 
 router.post('/auth' , registerValidation,asyncErrorHandler(async (req, res) => {
@@ -43,45 +43,28 @@ router.post('/auth' , registerValidation,asyncErrorHandler(async (req, res) => {
         });
         User.createUser(newUser , function (err,user) {
             if (err) throw err;
-            console.log(user);
         });
 
-        req.flash('success_message' , 'You register successfully.');
+        req.flash('success' , 'You register successfully.');
         res.redirect('/auth');
     }
 }));
-
-
 router.post('/login', passport.authenticate(
     'local',{failureRedirect:'/auth', failureFlash: 'invalid username or pass', session: true}) ,
     asyncErrorHandler(async (req, res) => {
+        const user = req.user;
+        io.on('connection',(socket)=>{
+            socket.request.session.name = user.name;
+        });
+
         res.redirect('/');
     }));
-
 router.get('/logout', function (req, res) {
     req.logout(function(err) {
-        if (err) { return next(err); }
+        if (err)  return next(err);
         res.redirect('/auth');
     });
 });
-
-
-/* Debug Passport Authenticate */
-// router.post('/login', (req, res,next) => {
-//     passport.authenticate('local', function (err, user, info) {
-//         if (err) {
-//             return res.status(401).json(err);
-//         }
-//         if (user) {
-//             return res.status(200).json({
-//                 "user": user
-//             });
-//         } else {
-//             res.status(401).json(info);
-//         }
-//     })(req, res, next)
-// })
-
 
 passport.use(new LocalStrategy({
     usernameField: 'email',
@@ -98,7 +81,6 @@ passport.use(new LocalStrategy({
         });
     });
 }));
-
 passport.serializeUser(function(user, done) {
     done(null, user.id);
 });
