@@ -7,6 +7,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const BodyParser = require('body-parser');
 const session = require('express-session');
+require('../helpers/passport')(passport);
 
 
 // Setup Global Middleware Here

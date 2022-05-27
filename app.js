@@ -48,6 +48,7 @@ app.get('*', function (req, res, next) {
     next();
 });
 
+
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
@@ -71,11 +72,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('auth', (email) => {
-        console.log(email);
         socket.request.session.email = email;
         //socket.request.session.name = name;
         socket.request.session.save();
-        socket.broadcast.emit('join_message', socket.request.session.name + ' has joined');
+        socket.broadcast.emit('join_message', email + ' has joined');
     });
 
     socket.on('disconnect', () => {

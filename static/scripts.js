@@ -28,7 +28,11 @@ jQuery(document).ready(function ($) {
 
     // login
     $(loginBtn).on('click',function () {
-        socket.emit('auth', document.getElementById('email').value);
+       socket.emit('auth', document.getElementById('email').value);
+
+        console.log(document.getElementById('email').value);
+        console.log(document.getElementById('user_mail').value);
+
     });
 
     // show messages
@@ -52,16 +56,15 @@ jQuery(document).ready(function ($) {
         message = crypt.decrypt(message);
         addMessage(message,email);
     });
-    socket.on('auth', function (email) {
-        // if (document.getElementById('email')){
-        //     document.getElementById('email').value = email;
-        // }
-        if (document.getElementById('user_mail')){
-            document.getElementById('user_mail').value = email;
-        }
-
-        socket.emit('join_message',email);
-    });
+    // socket.on('auth', function (email) {
+    //     // if (document.getElementById('email')){
+    //     //     document.getElementById('email').value = email;
+    //     // }
+    //     // if (document.getElementById('user_mail')){
+    //     //     document.getElementById('user_mail').value = email;
+    //     // }
+    //    //socket.emit('join_message','aliiii');
+    // });
     socket.on('join_message',(msg)=>{addJoinMessage(msg);});
 
 
@@ -87,15 +90,6 @@ jQuery(document).ready(function ($) {
         `);
         window.scrollTo(0, document.body.scrollHeight);
     };
-    // const addNotif = (name) => {
-    //     let messagesContainer = $('#messages');
-    //     $(messagesContainer).append(`
-    //         <li style="text-align: center;font-size: 85%;color: #555;">
-    //             <span style="vertical-align: super">welcome ${name} 😉</span>
-    //         </li>
-    //     `);
-    //     window.scrollTo(0, document.body.scrollHeight);
-    // }
 });
 
 
