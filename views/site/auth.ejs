@@ -22,9 +22,14 @@
                         <% })  %>
                     </div>
                 <% }  %>
-                <% if (Object.keys(flash_msg).length !== 0) { %>
+                <% if (Object.keys(succeed_login_msg).length !== 0) { %>
                     <div class="alert alert-success">
-                        <p class="text-success"><%= flash_msg %></p>
+                        <p class="text-success"><%= succeed_login_msg %></p>
+                    </div>
+                <% }  %>
+                <% if (Object.keys(failed_login_msg).length !== 0) { %>
+                    <div class="alert alert-danger">
+                        <p class="text-danger"><%= failed_login_msg %></p>
                     </div>
                 <% }  %>
 
@@ -54,13 +59,13 @@
                     <h3 class="mb-4 text-center">Sign Up</h3>
                     <form class="signup-form" action="/auth" method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name..." >
+                            <input type="text" class="form-control" name="name" placeholder="Enter Name..." >
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email..." >
+                            <input type="email" class="form-control" name="email"  placeholder="Enter Email..." >
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Pass..." >
+                            <input type="password" class="form-control" name="password"  placeholder="Enter Pass..." >
                         </div>
                         <div class="form-group">
                             <button type="submit" class="form-control btn btn-primary rounded submit px-3" id="signin_btn">

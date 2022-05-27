@@ -13,7 +13,7 @@ module.exports =  (passport) => {
             User.comparePassword(password, user.password, function (err, isMatch) {
                 if (err) return done(err);
                 if (isMatch) return done(null, user);
-                else return done(null, false, {messages: 'invalid Password'});
+                else return done(null, false, null);
             });
         });
     }));
