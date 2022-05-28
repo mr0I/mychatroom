@@ -43,11 +43,6 @@ global.parseOffsetLimit = function (req) {
     return { offset, limit };
 };
 
-app.get('*', function (req, res, next) {
-    res.locals.currentUser  = req.user || null;
-    next();
-});
-
 
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
@@ -55,15 +50,9 @@ require('./rpc/settings')(app); // setup the settings
 
 
 // socket
-const errorEmit = (socket) => {
-    return (err) => {
-        console.log(err);
-        socket.broadcast.emit('user.events', 'Something went wrong!');
-    };
-};
 io.on('connection', (socket) => {
-    if(socket.request.session.email !== undefined){
-        socket.emit('auth', socket.request.session.email);
+    if(socket.request.session.name !== undefined){
+        socket.emit('auth', socket.request.session.name);
     }
 
     //console.log('a user connected',socket.id);
@@ -71,24 +60,13 @@ io.on('connection', (socket) => {
         io.emit('chat_msg', data);
     });
 
-    socket.on('auth', (email) => {
-        socket.request.session.email = email;
-        //socket.request.session.name = name;
+    socket.on('auth', (name) => {
+        console.log('name',name);
+        socket.request.session.name = name;
         socket.request.session.save();
-        socket.broadcast.emit('join_message', email + ' has joined');
+        socket.broadcast.emit('join_message', name + ' has joined');
     });
 
-    socket.on('disconnect', () => {
-        // redis.client.get(socket.id)
-        //     .then((user) => {
-        //         if (user === null) return 'Someone';
-        //         else return user;
-        //     })
-        //     .then((user) => {
-        //         console.log(user + ' left');
-        //         socket.broadcast.emit('user.events', user + ' left');
-        //     }, errorEmit(socket));
-    });
 });
 
 
@@ -96,6 +74,3 @@ const hostname = '127.0.0.1';
 server.listen(8080, hostname, () => {
     console.log(`server started: http://${hostname}:${8080}`);
 });
-// app.listen(process.argv[2] , () => {
-//     console.log(`server started: http://${hostname}:${process.argv[2]}`);
-// });

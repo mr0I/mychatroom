@@ -12,6 +12,10 @@ require('../helpers/passport')(passport);
 
 // Setup Global Middleware Here
 module.exports = (app,io) => {
+    app.get('*', function (req, res, next) {
+        res.locals.currentUser  = req.user || null;
+        next();
+    });
     app.use(BodyParser.json({ limit: '10mb' }));
     app.use(BodyParser.urlencoded({ extended: false }));
     const sessionMiddleware = session({
