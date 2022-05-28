@@ -24,7 +24,7 @@ router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     const user = req.user;
     res.render('site/chat',{user:user});
 }));
-router.get('/auth' ,pageLimiter, asyncErrorRenderer(async (req, res) => {
+router.get('/auth',isGuest ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/auth',{succeed_login_msg: req.flash('success') , failed_login_msg : req.flash('error')});
 }));
 
@@ -63,12 +63,6 @@ router.post('/getUName',asyncErrorHandler(async (req,res) => {
 router.post('/login', passport.authenticate(
     'local',{failureRedirect:'/auth', failureFlash: 'invalid Password!', session: true}) ,
     asyncErrorHandler(async (req, res) => {
-        //const user = req.user;
-        // io.on('connection',(socket)=>{
-        //     socket.request.session.name = user.name;
-        // });
-        // req.session.userName = user.name;
-
         res.redirect('/');
     }));
 router.get('/logout', function (req, res) {
