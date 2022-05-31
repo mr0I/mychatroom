@@ -4,6 +4,7 @@ const { pageLimiter } = require('../../helpers/limiter');
 const { check, validationResult } = require('express-validator');
 const User = require('../../rpc/models/User');
 const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
 const { checkAuth , isGuest } = require('../../helpers/middlewares');
 const express = require('express');
 const app = express();
@@ -25,7 +26,11 @@ router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/chat',{user:user});
 }));
 router.get('/auth',isGuest ,pageLimiter, asyncErrorRenderer(async (req, res) => {
-    res.render('site/auth',{succeed_login_msg: req.flash('success') , failed_login_msg : req.flash('error')});
+    res.render('site/auth',{
+        succeed_login_msg: req.flash('success') ,
+        failed_login_msg : req.flash('error'),
+        user: req.user
+    });
 }));
 
 router.post('/auth' , registerValidation,asyncErrorHandler(async (req, res) => {
@@ -54,17 +59,19 @@ router.post('/getUName',asyncErrorHandler(async (req,res) => {
 
     User.getUserByEmail(email, function (err, user) {
         if (err) throw err;
-        if (!user) res.status(401).json({'success':false,'msg':'User Not Found'});
+        if (user === null || user === undefined) return res.status(401).json({'success':false,'msg':'User Not Found'});
 
         res.status(200).json({'success':true,'msg':user.name});
     });
 
 }));
+
 router.post('/login', passport.authenticate(
     'local',{failureRedirect:'/auth', failureFlash: 'invalid Password!', session: true}) ,
     asyncErrorHandler(async (req, res) => {
         res.redirect('/');
     }));
+
 router.get('/logout', function (req, res) {
     req.logout(function(err) {
         if (err)  return next(err);

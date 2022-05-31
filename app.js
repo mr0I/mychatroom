@@ -43,7 +43,7 @@ global.parseOffsetLimit = function (req) {
     return { offset, limit };
 };
 
-
+app.io = io;
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings

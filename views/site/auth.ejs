@@ -33,6 +33,7 @@
                     </div>
                 <% }  %>
 
+
                 <div class="login-wrap p-0">
                     <h3 class="mb-4 text-center">Sign In</h3>
                     <form class="signin-form" action="/login" method="post">
@@ -42,7 +43,7 @@
                         <div class="form-group">
                             <input type="password" class="form-control" name="password" id="password" placeholder="Enter Pass..." >
                         </div>
-                        <input type="hidden" id="uname" value="">
+                        <input type="hidden" id="uname" name="uname" value="">
                         <div class="form-group">
                             <button type="submit" id="login_btn" disabled
                                     class="form-control btn btn-primary rounded submit px-3" >

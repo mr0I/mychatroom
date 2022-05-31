@@ -1,6 +1,6 @@
 (function($) {
     "use strict";
-    $(window).on("load", function() { /*...*/ });
+    $(window).on("load", function() {});
 })(jQuery);
 
 jQuery(document).ready(function ($) {
@@ -15,11 +15,11 @@ jQuery(document).ready(function ($) {
     });
 
 
-    const socket = io({transports: ['websocket'], upgrade: false}); // init io
+    socket = io({transports: ['websocket'], upgrade: false}); // init io
+    // const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');
     const uMail = document.getElementById('umail');
-    const loginBtn = document.getElementById('login_btn');
     const emailInput = document.getElementById('email');
     const passInput = document.getElementById('password');
     // crypt settings
@@ -27,6 +27,18 @@ jQuery(document).ready(function ($) {
     var crypt = new JSEncrypt();
     crypt.setKey(pk);
 
+
+    // Check If We Are In Home Page
+    if (window.location.pathname === '/') {
+        if (localStorage.getItem('isJoinMsgEmitted') !== '1'){
+            socket.emit('auth', document.getElementById('uname').value);
+        }
+        localStorage.setItem('isJoinMsgEmitted','1');
+    }
+    // Check If We Are In Login Page
+    if (window.location.pathname === '/auth') {
+        localStorage.removeItem('isJoinMsgEmitted');
+    }
 
 
     $(emailInput).on('blur',function () {
@@ -55,16 +67,11 @@ jQuery(document).ready(function ($) {
     });
 
     $('.signin-form').on('change',function () {
-       let email = emailInput.value;
-       let pass = passInput.value;
+        let email = emailInput.value;
+        let pass = passInput.value;
 
-       if (email !== '' && pass !== '') $('#login_btn').attr('disabled',false);
-       else $('#login_btn').attr('disabled',true);
-    });
-
-    // login
-    $(loginBtn).on('click',function () {
-       socket.emit('auth', document.getElementById('uname').value);
+        if (email !== '' && pass !== '') $('#login_btn').attr('disabled',false);
+        else $('#login_btn').attr('disabled',true);
     });
 
     // show messages
@@ -115,5 +122,4 @@ jQuery(document).ready(function ($) {
         window.scrollTo(0, document.body.scrollHeight);
     };
 });
-
 
