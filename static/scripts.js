@@ -15,8 +15,7 @@ jQuery(document).ready(function ($) {
     });
 
 
-    socket = io({transports: ['websocket'], upgrade: false}); // init io
-    // const socket = io({transports: ['websocket'], upgrade: false}); // init io
+    const socket = io({transports: ['websocket'], upgrade: false}); // init io
     const form = document.getElementById('form');
     const input = document.getElementById('input');
     const uMail = document.getElementById('umail');
@@ -36,9 +35,7 @@ jQuery(document).ready(function ($) {
         localStorage.setItem('isJoinMsgEmitted','1');
     }
     // Check If We Are In Login Page
-    if (window.location.pathname === '/auth') {
-        localStorage.removeItem('isJoinMsgEmitted');
-    }
+    if (window.location.pathname === '/auth') localStorage.removeItem('isJoinMsgEmitted');
 
 
     $(emailInput).on('blur',function () {

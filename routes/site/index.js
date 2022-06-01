@@ -21,6 +21,9 @@ const registerValidation = [
     check('password').notEmpty().withMessage('پسورد را پر کنید!'),
 ];
 
+router.get('/success' ,pageLimiter, asyncErrorRenderer(async (req, res) => {
+    res.render('site/success');
+}));
 router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     const user = req.user;
     res.render('site/chat',{user:user});
@@ -78,6 +81,55 @@ router.get('/logout', function (req, res) {
         res.redirect('/auth');
     });
 });
+
+
+router.get('/auth/google',
+    passport.authenticate('google', { scope : ['email'] }));
+
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/error' }),
+    asyncErrorHandler(async (req, res) =>{
+        // Successful Authentication
+        const user = req.user;
+        const findUser = await User.getUserByGoogleID(user.id);
+        const duplicateEntry = await User.findOne({email:user.emails[0].value} );
+
+        if (findUser){
+            req.login(user, function (err) {
+                if (err) {
+                    req.flash('error' , 'invalid!!!');
+                    res.redirect('/auth');
+                }
+                else res.redirect('/');
+            })
+        } else if (duplicateEntry) {
+            req.login(user, function (err) {
+                if (err) {
+                    req.flash('error' , 'invalid!!!');
+                    res.redirect('/auth');
+                }
+                else res.redirect('/');
+            })
+        } else {
+            const newUser = new User({
+                name: user.displayName ??  (user.emails[0].value).split('@')[0],
+                email: user.emails[0].value,
+                password: Buffer.from('123456dummy', 'utf8').toString('base64'),
+                google_id: user.id,
+            });
+            User.createUser(newUser , function (err,user) {
+                if (err) {
+                    req.flash('error' , 'invalid!!!');
+                    res.redirect('/auth');
+                }
+                req.login(newUser, function (err) {
+                    if (err) throw err;
+                    else res.redirect('/');
+                })
+            });
+        }
+
+    }));
 
 
 module.exports = router;

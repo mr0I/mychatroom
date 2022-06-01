@@ -17,11 +17,19 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    google_id:{
+        type:String,
+        required:false
+    }
 });
 const User = module.exports = mongoose.model('User', userSchema);
 
 module.exports.getUserById = function (id, callback) {
     User.findById(id, callback);
+};
+module.exports.getUserByGoogleID = function (gid, callback) {
+    const query = {google_id:gid};
+    User.findOne(query, callback);
 };
 module.exports.getUserByEmail = function (email, callback) {
     const query = {email:email};
