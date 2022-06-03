@@ -11,6 +11,7 @@ const express = require('express'),
     redis = require('./helpers/redis');
 
 
+
 // Globals
 global.isDev = cmdArgs['dev'];
 global.asyncErrorHandler = function (f) {
@@ -61,10 +62,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('auth', (name) => {
-        console.log('name',name);
         socket.request.session.name = name;
         socket.request.session.save();
         socket.broadcast.emit('join_message', name + ' has joined');
+    });
+    socket.on('leave_message', (name) => {
+        socket.broadcast.emit('leave_message', name + ' has left!');
     });
 
 });

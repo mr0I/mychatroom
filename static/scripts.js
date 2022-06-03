@@ -19,6 +19,7 @@ jQuery(document).ready(function ($) {
     const form = document.getElementById('form');
     const input = document.getElementById('input');
     const uMail = document.getElementById('umail');
+    const uName = document.getElementById('uname');
     const emailInput = document.getElementById('email');
     const passInput = document.getElementById('password');
     // crypt settings
@@ -77,6 +78,7 @@ jQuery(document).ready(function ($) {
         if (input.value) {
             const msgData = {
                 message: crypt.encrypt(input.value),
+                name: uName.value,
                 email: uMail.value,
             };
 
@@ -87,22 +89,24 @@ jQuery(document).ready(function ($) {
 
     // emit events
     socket.on('chat_msg', function(data) {
-        let {message,email} = data;
+        let {message,email,name} = data;
 
         message = crypt.decrypt(message);
-        addMessage(message,email);
+        addMessage(message,email,name);
     });
 
     socket.on('join_message',(msg)=>{addJoinMessage(msg);});
+    socket.on('leave_message',(msg)=>{addLeaveMessage(msg);});
 
 
     // Functions
-    const addMessage = (msg,email='email@email.com') => {
+    const addMessage = (msg,email='email@email.com',name) => {
         let messagesContainer = $('#messages');
         const emailMd5 = CryptoJS.MD5(email).toString();
         const imageSrc = `http://www.gravatar.com/avatar/${emailMd5}?rating=PG&size=24&size=50&d=identicon`;
         $(messagesContainer).append(`  
             <li>
+                <small>${name}:</small>
                 <img src=${imageSrc} alt="avatar" style=" border-radius: 50%; width: 24px;"> 
                 <span style="vertical-align: super">${msg}</span>
             </li>
@@ -113,6 +117,15 @@ jQuery(document).ready(function ($) {
         let messagesContainer = $('#messages');
         $(messagesContainer).append(`  
             <li style="text-align: center;font-size: 85%;color: blueviolet;">
+                <span style="vertical-align: super">${msg}</span>
+            </li>
+        `);
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+    const addLeaveMessage = (msg) => {
+        let messagesContainer = $('#messages');
+        $(messagesContainer).append(`  
+            <li style="text-align: center;font-size: 85%;color: darkred;">
                 <span style="vertical-align: super">${msg}</span>
             </li>
         `);

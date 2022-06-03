@@ -12,7 +12,8 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-
+const EventEmitter = require('events').EventEmitter;
+const myEmitter = new EventEmitter();
 
 const registerValidation = [
     check('name').notEmpty().withMessage('نام را پر کنید!'),
@@ -70,24 +71,38 @@ router.post('/getUName',asyncErrorHandler(async (req,res) => {
 }));
 
 router.post('/login', passport.authenticate(
-    'local',{failureRedirect:'/auth', failureFlash: 'invalid Password!', session: true}) ,
+    'local',{failureRedirect:'/auth', failureFlash: 'invalid Password!', session: true},null) ,
     asyncErrorHandler(async (req, res) => {
         res.redirect('/');
     }));
 
 router.get('/logout', function (req, res) {
+    const name = req.user.name;
+    //console.log(name);
+
+    myEmitter.emit('leave_message',name);
+
+    // io.on('connection' , (socket) => {
+    //     socket.broadcast.emit('leave_message', name + ' has left!');
+    //     console.log(socket);
+    // });
+    //return;
+
     req.logout(function(err) {
-        if (err)  return next(err);
+        if (err) return next(err);
+        else {
+
         res.redirect('/auth');
+        }
     });
 });
 
 
 router.get('/auth/google',
-    passport.authenticate('google', { scope : ['email'] }));
+    passport.authenticate('google', { scope : ['email'] } , null));
 
 router.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/error' }),
+    passport.authenticate('google', { failureRedirect: '/error' } , null),
     asyncErrorHandler(async (req, res) =>{
         // Successful Authentication
         const user = req.user;
@@ -95,7 +110,7 @@ router.get('/auth/google/callback',
         const duplicateEntry = await User.findOne({email:user.emails[0].value} );
 
         if (findUser){
-            req.login(user, function (err) {
+            req.login(findUser, function (err) {
                 if (err) {
                     req.flash('error' , 'invalid!!!');
                     res.redirect('/auth');
@@ -103,13 +118,14 @@ router.get('/auth/google/callback',
                 else res.redirect('/');
             })
         } else if (duplicateEntry) {
-            req.login(user, function (err) {
+            req.login(duplicateEntry, function (err) {
                 if (err) {
                     req.flash('error' , 'invalid!!!');
                     res.redirect('/auth');
                 }
                 else res.redirect('/');
-            })
+            });
+
         } else {
             const newUser = new User({
                 name: user.displayName ??  (user.emails[0].value).split('@')[0],
@@ -128,7 +144,6 @@ router.get('/auth/google/callback',
                 })
             });
         }
-
     }));
 
 

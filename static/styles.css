@@ -39,11 +39,17 @@ body {
 
 #messages { list-style-type: none; margin: 0; padding: 0; }
 #messages > li {
-    padding: 0.5rem;
+    position: relative;
+    padding:24px 30px 4px 8px;
     color: #ECDBBA;
     width: 96%;
     background-color: #191919;
     margin: 8px auto;
+}
+#messages > li > small{
+    position: absolute;
+    top: 0;
+    left: 4px;
 }
 
 #messages > li:nth-child(odd){border-radius: 0 20px 0 0;}

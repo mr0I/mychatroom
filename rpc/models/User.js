@@ -1,17 +1,16 @@
-const mongoose = require('mongoose');
+const {mongoose} = require('../../helpers/db');
 const bcrypt = require('bcryptjs');
-mongoose.connect('mongodb://localhost/socket-db');
-const db = mongoose.connection;
+
 
 // User Schema
-const userSchema = mongoose.Schema({
+const user = mongoose.Schema({
     name:{
         type:String,
     },
     email:{
         type:String,
         index:true,
-        required:true
+        required:[true,'email is required!']
     },
     password:{
         type:String,
@@ -22,7 +21,8 @@ const userSchema = mongoose.Schema({
         required:false
     }
 });
-const User = module.exports = mongoose.model('User', userSchema);
+// const User = mongoose.model('User', user);
+const User = module.exports = mongoose.model('User', user);
 
 module.exports.getUserById = function (id, callback) {
     User.findById(id, callback);
@@ -48,4 +48,3 @@ module.exports.createUser= function (newUser,callback) {
         });
     });
 };
-
