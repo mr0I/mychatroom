@@ -44,7 +44,9 @@ global.parseOffsetLimit = function (req) {
     return { offset, limit };
 };
 
-app.io = io;
+
+app.set('socketio', io);
+// app.io = io;
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
@@ -66,9 +68,9 @@ io.on('connection', (socket) => {
         socket.request.session.save();
         socket.broadcast.emit('join_message', name + ' has joined');
     });
-    socket.on('leave_message', (name) => {
-        socket.broadcast.emit('leave_message', name + ' has left!');
-    });
+    // socket.on('leave_message', (name) => {
+    //     socket.broadcast.emit('leave_message', name + ' has left!');
+    // });
 
 });
 

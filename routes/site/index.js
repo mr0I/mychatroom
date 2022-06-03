@@ -77,7 +77,9 @@ router.post('/login', passport.authenticate(
     }));
 
 router.get('/logout', function (req, res) {
+    var io = req.app.get('socketio');
     const name = req.user.name;
+    io.emit('leave_message',name + ' has left!');
     //console.log(name);
 
     myEmitter.emit('leave_message',name);
