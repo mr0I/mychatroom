@@ -8,12 +8,12 @@ const passport = require('passport');
 const { checkAuth , isGuest } = require('../../helpers/middlewares');
 const express = require('express');
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-const EventEmitter = require('events').EventEmitter;
-const myEmitter = new EventEmitter();
+// const http = require('http');
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server);
+// const EventEmitter = require('events').EventEmitter;
+// const myEmitter = new EventEmitter();
 
 const registerValidation = [
     check('name').notEmpty().withMessage('نام را پر کنید!'),
@@ -77,25 +77,13 @@ router.post('/login', passport.authenticate(
     }));
 
 router.get('/logout', function (req, res) {
-    var io = req.app.get('socketio');
+    const io = req.app.get('socketio');
     const name = req.user.name;
     io.emit('leave_message',name + ' has left!');
-    //console.log(name);
-
-    myEmitter.emit('leave_message',name);
-
-    // io.on('connection' , (socket) => {
-    //     socket.broadcast.emit('leave_message', name + ' has left!');
-    //     console.log(socket);
-    // });
-    //return;
 
     req.logout(function(err) {
         if (err) return next(err);
-        else {
-
-        res.redirect('/auth');
-        }
+        else res.redirect('/auth');
     });
 });
 

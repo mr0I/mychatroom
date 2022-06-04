@@ -4,11 +4,11 @@ const express = require('express'),
     server = http.createServer(app),
     { Server } = require("socket.io"),
     io = new Server(server),
-    config = require('./config'),
-    session = require('express-session'),
-    JSEncrypt = require('node-jsencrypt'),
-    cmdArgs = require('yargs').argv,
-    redis = require('./helpers/redis');
+    // config = require('./config'),
+    // session = require('express-session'),
+    // JSEncrypt = require('node-jsencrypt'),
+    cmdArgs = require('yargs').argv;
+    // redis = require('./helpers/redis');
 
 
 
@@ -46,7 +46,6 @@ global.parseOffsetLimit = function (req) {
 
 
 app.set('socketio', io);
-// app.io = io;
 require('./rpc/middleware')(app,io); // setup the settings
 require('./rpc/api')(app); // setup the api
 require('./rpc/settings')(app); // setup the settings
@@ -68,10 +67,6 @@ io.on('connection', (socket) => {
         socket.request.session.save();
         socket.broadcast.emit('join_message', name + ' has joined');
     });
-    // socket.on('leave_message', (name) => {
-    //     socket.broadcast.emit('leave_message', name + ' has left!');
-    // });
-
 });
 
 

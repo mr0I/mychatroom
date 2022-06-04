@@ -125,7 +125,7 @@ jQuery(document).ready(function ($) {
     const addLeaveMessage = (msg) => {
         let messagesContainer = $('#messages');
         $(messagesContainer).append(`  
-            <li style="text-align: center;font-size: 85%;color: darkred;">
+            <li style="text-align: center;font-size: 85%;color: red;">
                 <span style="vertical-align: super">${msg}</span>
             </li>
         `);
