@@ -4,16 +4,10 @@ const { pageLimiter } = require('../../helpers/limiter');
 const { check, validationResult } = require('express-validator');
 const User = require('../../rpc/models/User');
 const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
 const { checkAuth , isGuest } = require('../../helpers/middlewares');
-const express = require('express');
-const app = express();
-// const http = require('http');
-// const server = http.createServer(app);
-// const { Server } = require("socket.io");
-// const io = new Server(server);
-// const EventEmitter = require('events').EventEmitter;
-// const myEmitter = new EventEmitter();
+const PubSub =require('../../helpers/pubsub');
+const pub_sub = new PubSub('greeting');
+
 
 const registerValidation = [
     check('name').notEmpty().withMessage('نام را پر کنید!'),
@@ -135,6 +129,15 @@ router.get('/auth/google/callback',
             });
         }
     }));
+
+
+// Pub Sub Pattern
+router.get('/call', (req, res) => {
+    pub_sub.sub(res);
+});
+router.get('/trigger', (req, res) => {
+    pub_sub.pub(res);
+});
 
 
 module.exports = router;
