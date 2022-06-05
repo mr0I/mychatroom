@@ -6,20 +6,23 @@
 </head>
 <body>
 
-<ul id="messages">
-    <% if (Object.keys(user).length !== 0) { %>
-        <li style="text-align: center;font-size: 85%;color: #555;">
-            <span style="vertical-align: super">Welcome <%= user.name %> 😉</span>
-        </li>
-    <% }  %>
-</ul>
-<form id="form" action="">
-    <input id="input" autocomplete="off" />
+<div class="chat-container">
+    <ul id="messages">
+        <% if (Object.keys(user).length !== 0) { %>
+            <li style="text-align: center;font-size: 85%;color: #555;">
+                <span style="vertical-align: super">Welcome <%= user.name %> 😉</span>
+            </li>
+        <% }  %>
+    </ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" />
 
-    <input type="hidden" id="umail" value="<%= user.email %>">
-    <input type="hidden" id="uname" value="<%= user.name %>">
-    <button>Send</button>
-</form>
+        <input type="hidden" id="umail" value="<%= user.email %>">
+        <input type="hidden" id="uname" value="<%= user.name %>">
+        <button>Send</button>
+    </form>
+
+</div>
 
 
 <script src="/socket.io/socket.io.js"></script>

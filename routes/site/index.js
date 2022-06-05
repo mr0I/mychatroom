@@ -25,8 +25,8 @@ router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
 }));
 router.get('/auth',isGuest ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/auth',{
-        succeed_login_msg: req.flash('success') ,
-        failed_login_msg : req.flash('error'),
+        succeed_login_msg: (req.flash('success')) ?? {} ,
+        failed_login_msg : (req.flash('error')) ?? {},
         user: req.user
     });
 }));
@@ -36,7 +36,12 @@ router.post('/auth' , registerValidation,asyncErrorHandler(async (req, res) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.render('site/auth', { 'errs': errors.errors });
+        res.render('site/auth',{
+            errs: errors.errors,
+            succeed_login_msg: (req.flash('success')) ?? {} ,
+            failed_login_msg : (req.flash('error')) ?? {},
+            user: req.user
+        });
     } else {
         const newUser = new User({
             name:name,

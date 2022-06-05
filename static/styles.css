@@ -5,17 +5,19 @@ color pallet:
 #C84B31
 #ECDBBA
 */
-body {
+body{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.chat-container {
+    position: absolute;
+    top: 0;
     margin: 0;
     padding-bottom: 3rem;
     background-image: url(./images/wall3.png);
-    /*background-image: linear-gradient(rgba(25, 25, 25, 0.5),*/
-    /*rgba(236, 219, 186, 0.2)),*/
-    /*url(./images/wall3.png);*/
     background-repeat: no-repeat;
     background-size: cover;
     height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
 }
 
 #form { background: rgba(0, 0, 0, 0.15); padding: 0; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
@@ -54,3 +56,15 @@ body {
 
 #messages > li:nth-child(odd){border-radius: 0 20px 0 0;}
 #messages > li:nth-child(even){border-radius: 0 0 20px 0;}
+
+.ftco-section {
+    background: url("./images/main-wall.jpg") no-repeat;
+    background-size: cover;
+    height: 100%;
+}
+.ftco-section #forms_container{
+    padding: 30px;
+    background-color: #ffffff10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}

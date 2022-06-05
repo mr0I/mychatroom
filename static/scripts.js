@@ -4,6 +4,8 @@
 })(jQuery);
 
 jQuery(document).ready(function ($) {
+    // bind console.log
+    var c = console.log.bind(document);
     // Auth Form UI
     $('.switch-to-login').on('click',function () {
         $('.login-wrap').addClass('d-none');
@@ -60,7 +62,7 @@ jQuery(document).ready(function ($) {
             if (data.success) document.getElementById('uname').value =data.msg;
             else document.getElementById('uname').value = emailInput.value;
         }).catch(error => {
-            console.error('Error:', error.message);
+            c('Error:', error.message);
         })
     });
 
