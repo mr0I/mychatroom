@@ -14,7 +14,7 @@ require('dotenv').config();
 
 
 // connect Mongoose to your DB
-//mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
 
 
 // mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
