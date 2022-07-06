@@ -4,6 +4,7 @@ const express = require('express'),
     server = http.createServer(app),
     { Server } = require("socket.io"),
     io = new Server(server),
+    mongoose = require('mongoose');
     // config = require('./config'),
     // session = require('express-session'),
     // JSEncrypt = require('node-jsencrypt'),
@@ -13,8 +14,13 @@ require('dotenv').config();
 
 
 // connect Mongoose to your DB
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
+//mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
+
+
+// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
+// const db = mongoose.connection
+//     .once('open',()=>{console.log('mongo connected:)')})
+//     .on('error', (error) => {console.warn(error)});
 
 // Globals
 global.isDev = cmdArgs['dev'];
