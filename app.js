@@ -5,22 +5,13 @@ const express = require('express'),
     { Server } = require("socket.io"),
     io = new Server(server),
     mongoose = require('mongoose');
-    // config = require('./config'),
-    // session = require('express-session'),
-    // JSEncrypt = require('node-jsencrypt'),
     cmdArgs = require('yargs').argv;
-// redis = require('./helpers/redis');
-require('dotenv').config();
+    require('dotenv').config();
 
 
-// connect Mongoose to your DB 
+// connect Mongoose to your DB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
 
-
-// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
-// const db = mongoose.connection
-//     .once('open',()=>{console.log('mongo connected:)')})
-//     .on('error', (error) => {console.warn(error)});
 
 // Globals
 global.isDev = cmdArgs['dev'];
