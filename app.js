@@ -12,6 +12,9 @@ const express = require('express'),
 require('dotenv').config();
 
 
+// connect Mongoose to your DB
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socket-db');
 
 // Globals
 global.isDev = cmdArgs['dev'];
