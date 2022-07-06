@@ -68,3 +68,14 @@ body{
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
+
+.social >a {
+    color: #fff;
+    background: #f8b158;
+    width: 100%;
+}
+#logout_btn{
+    color: #eee;
+    padding: 0 13px;
+    text-decoration: none;
+}
