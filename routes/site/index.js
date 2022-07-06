@@ -21,7 +21,9 @@ router.get('/success' ,pageLimiter, asyncErrorRenderer(async (req, res) => {
 }));
 router.get('/',checkAuth ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     const user = req.user;
-    res.render('site/chat',{user:user});
+    const hostname = req.headers.host;
+
+    res.render('site/chat',{user:user , hostname:hostname});
 }));
 router.get('/auth',isGuest ,pageLimiter, asyncErrorRenderer(async (req, res) => {
     res.render('site/auth',{
