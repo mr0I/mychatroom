@@ -4,8 +4,12 @@ const express = require('express'),
     server = http.createServer(app),
     { Server } = require("socket.io"),
     io = new Server(server),
+    // config = require('./config'),
+    // session = require('express-session'),
+    // JSEncrypt = require('node-jsencrypt'),
     cmdArgs = require('yargs').argv;
-    require('dotenv').config();
+// redis = require('./helpers/redis');
+require('dotenv').config();
 
 
 
@@ -67,11 +71,8 @@ io.on('connection', (socket) => {
 });
 
 
-
 const port = (isDev) ? 8080 : process.env.PORT;
 const hostname = (isDev) ? '127.0.0.1' : '0.0.0.0';
-
-app.listen(port, hostname, () => {
+server.listen(port, hostname, () => {
     console.log(`server started: http://${hostname}:${port}`);
 });
-
